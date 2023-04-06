@@ -18,9 +18,9 @@ class CodesWebController extends Controller
         //
     }
 
-    public function prueba()
+    public function prueba(string $email, string $code)
     {
-        return response()->json(['message' => "Codigo obtenido correctamente", 'code_movil' => "7000"], 200);
+        return response()->json(['message' => "Codigo obtenido correctamente", 'code_movil' => "$code"], 200);
     }
 
     /**
