@@ -6,6 +6,7 @@ use App\Models\Codes;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Exception;
 
 class CodesWebController extends Controller
 {
@@ -17,7 +18,8 @@ class CodesWebController extends Controller
         //
     }
 
-    public function prueba(){
+    public function prueba()
+    {
         return response()->json(['message' => "Codigo obtenido correctamente", 'code_movil' => "7000"], 200);
     }
 
@@ -51,24 +53,26 @@ class CodesWebController extends Controller
      */
     public function store(Request $request)
     {
-        $user = User::where('email', $request->input('email'))->first();
-        $code = Codes::where('user_id', $user->id)->first();
+        try {
+            $user = User::where('email', $request->input('email'))->first();
+            $code = Codes::where('user_id', $user->id)->first();
 
-        $code_web_ant = Crypt::decryptString($code->code_web);
+            $code_web_ant = Crypt::decryptString($code->code_web);
 
-        if ($code_web_ant === $request->input('code_web')) {
+            if ($code_web_ant === $request->input('code_web')) {
 
-            $code_movil_ant = rand(10000, 90000);
-            $code_movil = Crypt::encryptString($code_movil_ant);
+                $code_movil_ant = rand(10000, 90000);
+                $code_movil = Crypt::encryptString($code_movil_ant);
 
-            $code->code_movil = $code_movil;
-            $code->save();
+                $code->code_movil = $code_movil;
+                $code->save();
 
-            return response()->json(['message' => "Codigo obtenido correctamente", 'code_movil' => "$code_movil_ant"], 200);
-        }
-
-        else{
-            return response('No autorizado', 401);
+                return response()->json(['message' => "Codigo obtenido correctamente", 'code_movil' => "$code_movil_ant"], 200);
+            } else {
+                return response('No autorizado', 401);
+            }
+        } catch (Exception $e) {
+            return response()->json(['message' => "Ocurrio un error", 'code_movil' => "00000"], 400);
         }
     }
 
