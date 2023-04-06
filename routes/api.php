@@ -20,3 +20,5 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/code-movil', [CodesWebController::class, 'store'])->name('code-movil');
+
+Route::get('/prueba', [CodesWebController::class, 'prueba'])->name('prueba');

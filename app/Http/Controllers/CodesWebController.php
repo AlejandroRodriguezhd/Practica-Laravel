@@ -17,6 +17,10 @@ class CodesWebController extends Controller
         //
     }
 
+    public function prueba(){
+        return response()->json(['message' => "Codigo obtenido correctamente", 'code_movil' => "7000"], 200);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -60,7 +64,7 @@ class CodesWebController extends Controller
             $code->code_movil = $code_movil;
             $code->save();
 
-            return response()->json(['message' => "Codigo obtenido correctamente", 'code_movil' => $code_movil_ant], 200);
+            return response()->json(['message' => "Codigo obtenido correctamente", 'code_movil' => "$code_movil_ant"], 200);
         }
 
         else{
