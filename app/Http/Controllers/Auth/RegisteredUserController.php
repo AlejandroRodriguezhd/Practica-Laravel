@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Mail\SendCodes;
 use App\Models\User;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Auth\Events\Registered;
@@ -12,6 +13,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\View\View;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\URL;
 
 class RegisteredUserController extends Controller
 {
@@ -46,6 +49,13 @@ class RegisteredUserController extends Controller
 
         Auth::login($user);
 
-        return redirect(RouteServiceProvider::HOME);
+        /* return redirect(RouteServiceProvider::HOME); */
+
+        $id = Auth::id();
+
+        $url = URL::temporarySignedRoute('code-web', now()->addMinutes(1), ['user' => $id]);
+        Mail::to($request->input('email'))->send(new SendCodes($url));
+
+        return redirect()->intended(RouteServiceProvider::CODE);
     }
 }
